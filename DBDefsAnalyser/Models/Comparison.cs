@@ -19,10 +19,15 @@ namespace DBDefsAnalyser.Models
         /// <returns></returns>
         public float GetScalar(Comparison other)
         {
-            var scalar = UniqueMatches / Math.Max(other.UniqueMatches, 1f);
-            scalar *= Matches / Math.Max(other.Matches, 1f);
-            scalar *= RecordsCompared / Math.Max(other.RecordsCompared, 1f);
-            return scalar == 0f ? 1f : scalar;
+            var um = UniqueMatches / Math.Max(other.UniqueMatches, 1f);
+            var ms = Matches / Math.Max(other.Matches, 1f);
+            var rc = RecordsCompared / Math.Max(other.RecordsCompared, 1f);
+
+            var scalar = 1f;
+            if (um != 0f) scalar *= um;
+            if (ms != 0f) scalar *= ms;
+            if (rc != 0f) scalar *= rc;
+            return scalar;
         }
 
         public int CompareTo(Comparison other)
