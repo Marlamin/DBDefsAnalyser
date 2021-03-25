@@ -51,7 +51,7 @@ namespace DBDefsAnalyser
 
                 foreach (var build in builds)
                 {
-                    var versions = DefinitionHelper.GetVersionDefinitions(definition, build);
+                    var versions = DefinitionHelper.GetVersionDefinitions(definition, build, options.Targets);
                     var comparer = new CompareService(filename, definition, versions);
                     var set = new ComparisonSet(filename, versions.Current);
 

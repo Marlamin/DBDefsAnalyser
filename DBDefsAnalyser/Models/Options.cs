@@ -15,5 +15,8 @@ namespace DBDefsAnalyser.Models
 
         [Option("build", HelpText = "Parse all files for a specific")]
         public string Build { get; set; }
+
+        [Option("targets", HelpText = "Specific builds to compare to", Separator = ',', Required = false)]
+        public IEnumerable<string> Targets { get; set; }
     }
 }

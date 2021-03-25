@@ -3,7 +3,6 @@ using DBDefsLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using static DBDefsLib.Structs;
 
@@ -45,23 +44,32 @@ namespace DBDefsAnalyser.Utils
         /// <param name="definition"></param>
         /// <param name="build"></param>
         /// <returns></returns>
-        public static Versions GetVersionDefinitions(DBDefinition definition, Build build)
+        public static Versions GetVersionDefinitions(DBDefinition definition, Build build, IEnumerable<string> targets)
         {
             var min = new Build("0.0.0.0");
             var max = new Build("99.99.99.999999");
             var sorter = new BuildSorter(build);
             var result = new Versions();
 
-            Build Closest(VersionDefinitions definition)
+            var filter = targets.Select(x => new Build(x)).ToHashSet();
+
+            bool Closest(VersionDefinitions definition, out Build closest)
             {
                 var builds = definition.builds.ToList();
                 builds.AddRange(definition.buildRanges.Select(x => x.minBuild));
                 builds.AddRange(definition.buildRanges.Select(x => x.maxBuild));
-                builds.Sort(sorter);
-                return builds[0];
+
+                if (filter.Count > 0)
+                    builds.RemoveAll(b => !filter.Contains(b));
+
+                if (builds.Count > 1)
+                    builds.Sort(sorter);
+
+                closest = builds.Count > 0 ? builds[0] : null;
+                return closest != null;
             }
 
-            for(var i = 0; i < definition.versionDefinitions.Length; i++)
+            for (var i = 0; i < definition.versionDefinitions.Length; i++)
             {
                 var versionDef = definition.versionDefinitions[i];
 
@@ -76,17 +84,18 @@ namespace DBDefsAnalyser.Utils
                 if (versionDef.definitions.All(x => x.isID || x.name.StartsWith("Field_")))
                     continue;
 
-                var closest = Closest(versionDef);
+                if (!Closest(versionDef, out var closest))
+                    continue;
 
                 if (closest < build && closest > min)
                 {
                     min = closest;
                     result.Older = new BuildVersionPair(closest, versionDef);
-                }                
+                }
                 else if (closest > build && closest < max)
                 {
                     max = closest;
-                    result.Newer = new BuildVersionPair(closest, versionDef);                   
+                    result.Newer = new BuildVersionPair(closest, versionDef);
                 }
             }
 
