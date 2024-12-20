@@ -12,7 +12,7 @@ namespace DBDefsAnalyser
         public const string CommitNeedle = "Merge defs for ";
         public const string RawDefinitonUrl = "https://github.com/wowdev/WoWDBDefs/raw/master/definitions/{0}.dbd";
         public const string CSVUrl = @"https://wow.tools/dbc/api/export/?name={0}&build={1}";
-        public const string NewFieldRegex = @"^\+\w+\sField_(\d_\d{1,2}_\d{1,2}_\d+)";
+        public const string NewFieldRegex = @"^\+\w+\sField_(\d{1,2}_\d{1,2}_\d{1,2}_\d+)";
         public const string CommentSuffix = "DBAnalyser:";
         public static readonly Commit EmptyCommit = new Commit();
 
