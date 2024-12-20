@@ -75,7 +75,7 @@ namespace DBDefsAnalyser
                         set.Print();
                     }
 
-                    dbWriter.Save(definition, Path.Combine(options.DefinitionPath, $"{filename}.dbd"));
+                    dbWriter.Save(definition, Path.Combine(options.DefinitionPath, $"{filename}.dbd"), true);
                 }
             }
 
