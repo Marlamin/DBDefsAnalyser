@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace DBDefsAnalyser.Services
 {
@@ -74,7 +73,7 @@ namespace DBDefsAnalyser.Services
         {
             var lookup = new Dictionary<string, Models.Commit>(0x10);
 
-            if(IsValid)
+            if (IsValid)
             {
                 foreach (var file in Directory.EnumerateFiles(TempPath))
                 {

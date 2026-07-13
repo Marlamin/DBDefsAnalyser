@@ -3,7 +3,6 @@ using DBDefsAnalyser.Utils;
 using DBDefsLib;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using static DBDefsLib.Structs;
 
@@ -128,7 +127,7 @@ namespace DBDefsAnalyser.Services
                 if (GetColumn(def.name, VersionType.Current).name != null)
                     continue;
                 // relation field shortcut
-                if(column.isRelation && def.isRelation)
+                if (column.isRelation && def.isRelation)
                 {
                     result.Clear();
                     result.Add(def);

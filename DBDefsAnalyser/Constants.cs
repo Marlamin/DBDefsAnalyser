@@ -8,12 +8,13 @@ namespace DBDefsAnalyser
     {
         public const string UserAgent = "User-Agent: DBDefsAnalyser";
         public const string CommitAPI = "https://api.github.com/repos/wowdev/WoWDBDefs/commits";
-        public const string CommitFilter = "?author=marlamin";
-        public const string CommitNeedle = "Merge defs for ";
+        public const string CommitFilter = "?author=bloerwald";
+        public const string CommitNeedle = "definitions: import";
         public const string RawDefinitonUrl = "https://github.com/wowdev/WoWDBDefs/raw/master/definitions/{0}.dbd";
-        public const string CSVUrl = @"https://wow.tools/dbc/api/export/?name={0}&build={1}";
+        public const string CSVUrl = @"http://localhost:5000/dbc/export/?name={0}&build={1}";
         public const string NewFieldRegex = @"^\+\w+\sField_(\d{1,2}_\d{1,2}_\d{1,2}_\d+)";
         public const string CommentSuffix = "DBAnalyser:";
+        public const string Token = "";
         public static readonly Commit EmptyCommit = new Commit();
 
         /// <summary>

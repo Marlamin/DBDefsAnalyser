@@ -2,11 +2,10 @@
 using DBDefsAnalyser.Utils;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace DBDefsAnalyser.Services
 {
@@ -32,19 +31,19 @@ namespace DBDefsAnalyser.Services
 
         public Commit GetCommit(string sha)
         {
-            if(!string.IsNullOrWhiteSpace(sha))
+            if (!string.IsNullOrWhiteSpace(sha))
             {
                 var commit = Get<Commit>(Constants.CommitAPI + "/" + sha);
                 if (commit != null)
                     return LoadDetails(commit);
-            }          
+            }
 
             return Constants.EmptyCommit;
         }
 
         public Stream GetDefinition(string filename)
         {
-            if(!CacheService.TryGetDefinition(filename, out var filepath))
+            if (!CacheService.TryGetDefinition(filename, out var filepath))
             {
                 Client.Headers.Add(HttpRequestHeader.UserAgent, Constants.UserAgent);
                 return Client.OpenRead(string.Format(Constants.RawDefinitonUrl, filename));
@@ -52,7 +51,7 @@ namespace DBDefsAnalyser.Services
             else
             {
                 return System.IO.File.OpenRead(filepath);
-            }            
+            }
         }
 
         private Commit LoadDetails(Commit commit)
@@ -78,8 +77,23 @@ namespace DBDefsAnalyser.Services
 
         private T Get<T>(string url) where T : class
         {
+            if (!Directory.Exists("gitcache"))
+                Directory.CreateDirectory("gitcache");
+
+            var urlMD5 = Convert.ToHexStringLower(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(url)));
+
             Client.Headers.Add(HttpRequestHeader.UserAgent, Constants.UserAgent);
-            return JsonConvert.DeserializeObject<T>(Client.DownloadString(url));
+            if (!string.IsNullOrEmpty(Constants.Token))
+                Client.Headers.Add(HttpRequestHeader.Authorization, "Bearer: " + Constants.Token);
+
+            if (System.IO.File.Exists(Path.Combine("gitcache", urlMD5)))
+                return JsonConvert.DeserializeObject<T>(System.IO.File.ReadAllText(Path.Combine("gitcache", urlMD5)));
+
+            Console.WriteLine("Downloading: " + url);
+
+            var result = Client.DownloadString(url);
+            System.IO.File.WriteAllText(Path.Combine("gitcache", urlMD5), result);
+            return JsonConvert.DeserializeObject<T>(result);
         }
 
         public void Dispose() => Client.Dispose();
