@@ -2,7 +2,7 @@
 using DBDefsLib;
 using System;
 using System.Linq;
-using static DBDefsLib.Structs;
+using DBDefsLib.Structs;
 
 namespace DBDefsAnalyser.Models
 {

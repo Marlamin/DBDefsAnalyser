@@ -1,6 +1,4 @@
 ﻿using DBDefsAnalyser.Models;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 
 namespace DBDefsAnalyser
 {

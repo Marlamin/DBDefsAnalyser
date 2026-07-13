@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using static DBDefsLib.Structs;
+using DBDefsLib.Structs;
 
 namespace DBDefsAnalyser.Utils
 {
