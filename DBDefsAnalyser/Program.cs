@@ -28,7 +28,19 @@ namespace DBDefsAnalyser
         {
             CacheService.Initalise(options.DefinitionPath);
 
-            using var wt = new WoWToolsService();
+            var urlFormat = "";
+            if(options.Source == "wtlcsv")
+                urlFormat = Constants.WTLCSVURL;
+            else if (options.Source == "wagocsv")
+                urlFormat = Constants.WagoCSVURL;
+            else
+                throw new ArgumentException($"Invalid source specified: {options.Source}");
+
+            var domain = options.Domain;
+            if (options.Source == "wagocsv" && options.Domain == "localhost:5080") // if wago is the source and wtl is the default domain still, update it
+                domain = "wago.tools";
+
+            using var csv = new CSVService(domain, urlFormat);
             using var git = new GitService();
             var dbReader = new DBDReader();
             var dbWriter = new DBDWriter();
@@ -53,10 +65,10 @@ namespace DBDefsAnalyser
                     var comparer = new CompareService(filename, definition, versions);
                     var set = new ComparisonSet(filename, versions.Current);
 
-                    if (comparer.LoadDataSets(VersionType.Newer, wt))
+                    if (comparer.LoadDataSets(VersionType.Newer, csv))
                         set.Merge(comparer.Compare(VersionType.Newer));
 
-                    if (comparer.LoadDataSets(VersionType.Older, wt))
+                    if (comparer.LoadDataSets(VersionType.Older, csv))
                         set.Merge(comparer.Compare(VersionType.Older));
 
                     if (set.Count == 0)

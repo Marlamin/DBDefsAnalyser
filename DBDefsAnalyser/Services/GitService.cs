@@ -80,7 +80,7 @@ namespace DBDefsAnalyser.Services
             if (!Directory.Exists("gitcache"))
                 Directory.CreateDirectory("gitcache");
 
-            var urlMD5 = Convert.ToHexStringLower(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(url)));
+            var urlMD5 = Convert.ToHexStringLower(MD5.HashData(Encoding.UTF8.GetBytes(url)));
 
             Client.Headers.Add(HttpRequestHeader.UserAgent, Constants.UserAgent);
             if (!string.IsNullOrEmpty(Constants.Token))

@@ -23,7 +23,7 @@ namespace DBDefsAnalyser.Services
             Versions = versions;
         }
 
-        public bool LoadDataSets(VersionType type, WoWToolsService wt)
+        public bool LoadDataSets(VersionType type, CSVService wt)
         {
             var version = Versions.Get(type);
 
@@ -207,7 +207,7 @@ namespace DBDefsAnalyser.Services
         /// <param name="wt"></param>
         /// <param name="build"></param>
         /// <returns></returns>
-        private bool UpdateDataTable(WoWToolsService wt, Build build)
+        private bool UpdateDataTable(CSVService wt, Build build)
         {
             var builds = Versions.Current.Version.builds.ToList();
             builds.AddRange(Versions.Current.Version.buildRanges.Select(x => x.minBuild));

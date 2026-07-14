@@ -8,12 +8,16 @@ using System.Net;
 
 namespace DBDefsAnalyser.Services
 {
-    public class WoWToolsService : IDisposable
+    public class CSVService : IDisposable
     {
         private readonly WebClientEx Client;
+        private readonly string Domain;
+        private readonly string UrlFormat;
 
-        public WoWToolsService()
+        public CSVService(string domain, string urlFormat)
         {
+            Domain = domain;
+            UrlFormat = urlFormat;
             Client = new WebClientEx()
             {
                 AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip
@@ -26,7 +30,7 @@ namespace DBDefsAnalyser.Services
             {
                 build ??= version.Build;
 
-                var url = string.Format(Constants.CSVUrl, definition.ToLower(), build.ToString());
+                var url = string.Format(UrlFormat, Domain, definition.ToLower(), build.ToString());
                 var data = Client.DownloadString(url);
 
                 System.Threading.Thread.Sleep(1500);
@@ -43,10 +47,11 @@ namespace DBDefsAnalyser.Services
                 dataTable = result;
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Logger.WriteLine();
                 Logger.WriteLine($"Unable to download {definition} for build {build}");
+                Logger.WriteLine(e.Message);
                 dataTable = null;
                 return false;
             }
