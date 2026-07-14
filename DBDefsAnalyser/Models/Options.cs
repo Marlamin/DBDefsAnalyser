@@ -14,6 +14,9 @@ namespace DBDefsAnalyser.Models
         [Option("build", HelpText = "Parse all files for a specific build")]
         public string Build { get; set; }
 
+        [Option("mode", HelpText = "Mode for comparison. Options: updateDefs, updateMeta", Default = "updateDefs")]
+        public string Mode { get; set; }
+
         [Option("source", HelpText = "Source for table data. Options: wtlcsv, wagocsv", Default = "wtlcsv")]
         public string Source { get; set; }
 
