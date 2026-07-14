@@ -1,10 +1,10 @@
 ﻿using DBDefsAnalyser.Models;
 using DBDefsAnalyser.Utils;
 using DBDefsLib;
+using DBDefsLib.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DBDefsLib.Structs;
 
 namespace DBDefsAnalyser.Services
 {

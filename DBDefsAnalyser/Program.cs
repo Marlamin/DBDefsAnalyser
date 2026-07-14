@@ -29,7 +29,7 @@ namespace DBDefsAnalyser
             CacheService.Initalise(options.DefinitionPath);
 
             var urlFormat = "";
-            if(options.Source == "wtlcsv")
+            if (options.Source == "wtlcsv")
                 urlFormat = Constants.WTLCSVURL;
             else if (options.Source == "wagocsv")
                 urlFormat = Constants.WagoCSVURL;

@@ -1,9 +1,8 @@
 ﻿using DBDefsAnalyser.Models;
-using DBDefsAnalyser.Utils;
 using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -11,11 +10,11 @@ namespace DBDefsAnalyser.Services
 {
     public class GitService : IDisposable
     {
-        private readonly WebClientEx Client;
+        private readonly HttpClient Client;
 
         public GitService()
         {
-            Client = new WebClientEx();
+            Client = new();
         }
 
         public Commit GetLatestCommit()
@@ -45,8 +44,8 @@ namespace DBDefsAnalyser.Services
         {
             if (!CacheService.TryGetDefinition(filename, out var filepath))
             {
-                Client.Headers.Add(HttpRequestHeader.UserAgent, Constants.UserAgent);
-                return Client.OpenRead(string.Format(Constants.RawDefinitonUrl, filename));
+                Client.DefaultRequestHeaders.Add("User-Agent", Constants.UserAgent);
+                return Client.GetStreamAsync(string.Format(Constants.RawDefinitonUrl, filename)).Result;
             }
             else
             {
@@ -82,16 +81,16 @@ namespace DBDefsAnalyser.Services
 
             var urlMD5 = Convert.ToHexStringLower(MD5.HashData(Encoding.UTF8.GetBytes(url)));
 
-            Client.Headers.Add(HttpRequestHeader.UserAgent, Constants.UserAgent);
+            Client.DefaultRequestHeaders.Add("User-Agent", Constants.UserAgent);
             if (!string.IsNullOrEmpty(Constants.Token))
-                Client.Headers.Add(HttpRequestHeader.Authorization, "Bearer: " + Constants.Token);
+                Client.DefaultRequestHeaders.Add("Authorization", "Bearer: " + Constants.Token);
 
             if (System.IO.File.Exists(Path.Combine("gitcache", urlMD5)))
                 return JsonConvert.DeserializeObject<T>(System.IO.File.ReadAllText(Path.Combine("gitcache", urlMD5)));
 
             Console.WriteLine("Downloading: " + url);
 
-            var result = Client.DownloadString(url);
+            var result = Client.GetStringAsync(url).Result;
             System.IO.File.WriteAllText(Path.Combine("gitcache", urlMD5), result);
             return JsonConvert.DeserializeObject<T>(result);
         }

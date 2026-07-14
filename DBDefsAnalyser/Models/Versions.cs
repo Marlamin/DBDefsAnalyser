@@ -1,8 +1,8 @@
 ﻿using DBDefsAnalyser.Utils;
 using DBDefsLib;
+using DBDefsLib.Structs;
 using System;
 using System.Linq;
-using DBDefsLib.Structs;
 
 namespace DBDefsAnalyser.Models
 {

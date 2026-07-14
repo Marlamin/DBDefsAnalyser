@@ -4,13 +4,13 @@ using DBDefsLib;
 using Microsoft.VisualBasic.FileIO;
 using System;
 using System.IO;
-using System.Net;
+using System.Net.Http;
 
 namespace DBDefsAnalyser.Services
 {
     public class CSVService : IDisposable
     {
-        private readonly WebClientEx Client;
+        private readonly HttpClient Client;
         private readonly string Domain;
         private readonly string UrlFormat;
 
@@ -18,10 +18,7 @@ namespace DBDefsAnalyser.Services
         {
             Domain = domain;
             UrlFormat = urlFormat;
-            Client = new WebClientEx()
-            {
-                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip
-            };
+            Client = new();
         }
 
         public bool TryGetDataTable(string definition, BuildVersionPair version, out DataTable dataTable, Build build = null)
@@ -31,7 +28,7 @@ namespace DBDefsAnalyser.Services
                 build ??= version.Build;
 
                 var url = string.Format(UrlFormat, Domain, definition.ToLower(), build.ToString());
-                var data = Client.DownloadString(url);
+                var data = Client.GetStringAsync(url).Result;
 
                 System.Threading.Thread.Sleep(1500);
 
